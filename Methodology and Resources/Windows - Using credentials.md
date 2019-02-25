@@ -23,6 +23,17 @@ Username: RetailAdmin
 Password: trs10
 ```
 
+## TIP - Sandbox Credential - WDAGUtilityAccount - [@never_released on Twitter](https://twitter.com/never_released/status/1081569133844676608)
+
+Starting with Windows 10 version 1709 (Fall Creators Update), it is part of Windows Defender Application Guard
+
+```powershell
+\\windowssandbox
+Username: wdagutilityaccount
+Password: pw123
+```
+
+
 ## Metasploit - SMB
 
 ```c
@@ -137,7 +148,7 @@ PsExec.exe  \\ordws01.cscou.lab -u CSCOU\jarrieta -p nastyCutt3r cmd.exe
 PsExec.exe  \\ordws01.cscou.lab -u CSCOU\jarrieta -p nastyCutt3r cmd.exe -s  # get System shell
 ```
 
-## Thanks
+## References
 
 - [Ropnop - Using credentials to own Windows boxes](https://blog.ropnop.com/using-credentials-to-own-windows-boxes/)
 - [Ropnop - Using credentials to own Windows boxes Part 2](https://blog.ropnop.com/using-credentials-to-own-windows-boxes-part-2-psexec-and-services/)

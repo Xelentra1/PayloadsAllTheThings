@@ -8,32 +8,49 @@ You can also contribute with a beer IRL or with `buymeacoffee.com`
 
 [![Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoff.ee/swissky)
 
-Every section contains:
+Every section contains the following files, you can use the `_template_vuln` folder to create a new chapter:
 
 - README.md - vulnerability description and how to exploit it
-- Intruders - a set of files to give to Burp Intruder
-- Some exploits
+- Intruder - a set of files to give to Burp Intruder
+- Images - pictures for the README.md
+- Files - some files referenced in the README.md
 
 You might also like :
 
 - [Methodology and Resources](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/)
   - [Active Directory Attack.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md)
+  - [Linux - Persistence.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Persistence.md)
+  - [Linux - Privilege Escalation.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md)
+  - [Metasploit - Cheatsheet.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Metasploit%20-%20Cheatsheet.md)  
   - [Methodology_and_enumeration.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Methodology_and_enumeration.md)
   - [Network Pivoting Techniques.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Network%20Pivoting%20Techniques.md)
+  - [Network Discovery.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Network%20Discovery.md)
   - [Reverse Shell Cheatsheet.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md)
+  - [Subdomains Enumeration.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Subdomains%20Enumeration.md)
   - [Windows - Download and Execute.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Download%20and%20Execute.md)
   - [Windows - Mimikatz.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Mimikatz.md)
   - [Windows - Persistence.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Persistence.md)
+  - [Windows - Post Exploitation Koadic.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Post%20Exploitation%20Koadic.md)
   - [Windows - Privilege Escalation.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md)
   - [Windows - Using credentials.md](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Using%20credentials.md)
 
 - [CVE Exploits](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/CVE%20Exploits)
-  - Apache Struts 2 CVE-2017-5638.py
-  - Apache Struts 2 CVE-2017-9805.py
-  - Drupalgeddon2 CVE-2018-7600.rb
-  - Heartbleed CVE-2014-0160.py
-  - Shellshock CVE-2014-6271.py
-  - Tomcat CVE-2017-12617.py
+    - Apache Struts 2 CVE-2013-2251 CVE-2017-5638 CVE-2018-11776_.py
+    - Apache Struts 2 CVE-2017-5638.py
+    - Apache Struts 2 CVE-2017-9805.py
+    - Apache Struts 2 CVE-2018-11776.py
+    - Docker API RCE.py
+    - Drupalgeddon2 CVE-2018-7600.rb
+    - Heartbleed CVE-2014-0160.py
+    - JBoss CVE-2015-7501.py
+    - Jenkins CVE-2015-8103.py
+    - Jenkins CVE-2016-0792.py
+    - Shellshock CVE-2014-6271.py
+    - Tomcat CVE-2017-12617.py
+    - WebLogic CVE-2016-3510.py
+    - WebLogic CVE-2017-10271.py
+    - WebLogic CVE-2018-2894.py
+    - WebSphere CVE-2015-7450.py
 
 ## Try Harder
 
@@ -47,7 +64,7 @@ Ever wonder where you can use your knowledge ? The following list will help you 
   - [Intigriti](https://www.intigriti.com)
   - [List of Bounty Program](https://bugcrowd.com/list-of-bug-bounty-programs/)
 - __Online Platforms__
-  - [Hack The Box](hackthebox.eu/)
+  - [Hack The Box](https://hackthebox.eu/)
   - [Penetration test lab "Test lab" | Pentestit](https://lab.pentestit.ru)
   - [PentesterLab : Learn Web Penetration Testing: The Right Way](https://pentesterlab.com/)
   - [Zenk-Security](https://www.zenk-security.com/epreuves.php)
@@ -98,24 +115,7 @@ Grab a book and relax, these ones are the best security books (in my opinion).
 
 ### Youtube
 
+- [IppSec Channel - Hack The Box Writeups](https://www.youtube.com/channel/UCa6eh7gCkpPo5XXUDfygQQA)
 - [Hunting for Top Bounties - Nicolas Grégoire](https://www.youtube.com/watch?v=mQjTgDuLsp4)
 - [BSidesSF 101 The Tales of a Bug Bounty Hunter - Arne Swinnen](https://www.youtube.com/watch?v=dsekKYNLBbc)
 - [Security Fest 2016 The Secret life of a Bug Bounty Hunter - Frans Rosén](https://www.youtube.com/watch?v=KDo68Laayh8)
-- [IppSec Channel - Hack The Box Writeups](https://www.youtube.com/channel/UCa6eh7gCkpPo5XXUDfygQQA)
-
-### Docker
-
-| Command     | Link |
-| :------------- | :------------- |
-| `docker pull remnux/metasploit` | [docker-metasploit](https://hub.docker.com/r/remnux/metasploit/) |
-| `docker pull paoloo/sqlmap`     | [docker-sqlmap](https://hub.docker.com/r/paoloo/sqlmap/)         |
-| `docker pull kalilinux/kali-linux-docker` | [official Kali Linux](https://hub.docker.com/r/kalilinux/kali-linux-docker/) |
-| `docker pull owasp/zap2docker-stable` | [official OWASP ZAP](https://github.com/zaproxy/zaproxy) |
-| `docker pull wpscanteam/wpscan`       | [official WPScan](https://hub.docker.com/r/wpscanteam/wpscan/) |
-| `docker pull infoslack/dvwa`          | [Damn Vulnerable Web Application (DVWA)](https://hub.docker.com/r/infoslack/dvwa/) |
-| `docker pull danmx/docker-owasp-webgoat` | [OWASP WebGoat Project docker image](https://hub.docker.com/r/danmx/docker-owasp-webgoat/) |
-| `docker pull opendns/security-ninjas` | [Security Ninjas](https://hub.docker.com/r/opendns/security-ninjas/) |
-| `docker pull ismisepaul/securityshepherd` | [OWASP Security Shepherd](https://hub.docker.com/r/ismisepaul/securityshepherd/) |
-| `docker-compose build && docker-compose up` | [OWASP NodeGoat](https://github.com/owasp/nodegoat#option-3---run-nodegoat-on-docker) |
-| `docker pull citizenstig/nowasp` | [OWASP Mutillidae II Web Pen-Test Practice Application](https://hub.docker.com/r/citizenstig/nowasp/) |
-| `docker pull bkimminich/juice-shop` | [OWASP Juice Shop](https://github.com/bkimminich/juice-shop#docker-container) |
